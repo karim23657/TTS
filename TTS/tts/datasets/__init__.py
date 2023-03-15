@@ -144,7 +144,7 @@ def load_tts_samples(
                     attn_file = meta_data[ins["audio_file"]].strip()
                     meta_data_eval_all[idx].update({"alignment_file": attn_file})
         # set none for the next iter
-        formatter = None
+        # formatter = None
     return meta_data_train_all, meta_data_eval_all
 
 
