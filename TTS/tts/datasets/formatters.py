@@ -12,6 +12,32 @@ from tqdm import tqdm
 # DATASETS
 ########################
 
+dataset_names={
+    "persian-tts-dataset-famale":"dilara",
+    "persian-tts-dataset":"changiz",
+    "persian-tts-dataset-male":"farid"
+}
+def mozilla_with_speaker(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
+    """Normalizes Mozilla meta data files to TTS format"""
+    print("kwargs")
+    print(kwargs)
+    if 'language' in kwargs:
+      print(language)
+    txt_file = os.path.join(root_path, meta_file)
+    items = []
+    speaker_name = dataset_names[os.path.basename(root_path)]
+    print(speaker_name)
+    with open(txt_file, "r", encoding="utf-8") as ttf:
+        for line in ttf:
+            cols = line.split("|")
+            wav_file = cols[1].strip()
+            text = cols[0].strip()
+            wav_file = os.path.join(root_path, "wavs", wav_file)
+            items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
+    return items
+
+
+
 
 def coqui(root_path, meta_file, ignored_speakers=None):
     """Interal dataset formatter."""
