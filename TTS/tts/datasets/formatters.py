@@ -12,28 +12,38 @@ from tqdm import tqdm
 # DATASETS
 ########################
 
-dataset_names={
+
+def mozilla_with_speaker(root_path, meta_file, **kwargs):  
+    """Loades three kaggle datasets in Mozilla format as a multispeaker dataset
+    Kaggle datasets are:
+    magnoliasis/persian-tts-dataset-famale
+    magnoliasis/persian-tts-dataset
+    magnoliasis/persian-tts-dataset-male
+    
+    This function is very usefull while using kaggle notebooks.
+    
+    Args:
+        root_path (str): root folder where all three datasets downloaded. for example on kaggle notebooks: /kaggle/input
+        meta_files (str):  list of meta files to be used in the training.
+    """
+    dataset_names={
     "persian-tts-dataset-famale":"dilara",
     "persian-tts-dataset":"changiz",
     "persian-tts-dataset-male":"farid"
-}
-def mozilla_with_speaker(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
-    """Normalizes Mozilla meta data files to TTS format"""
-    print("kwargs")
-    print(kwargs)
-    if 'language' in kwargs:
-      print(language)
-    txt_file = os.path.join(root_path, meta_file)
+    }
     items = []
-    speaker_name = dataset_names[os.path.basename(root_path)]
-    print(speaker_name)
-    with open(txt_file, "r", encoding="utf-8") as ttf:
-        for line in ttf:
-            cols = line.split("|")
-            wav_file = cols[1].strip()
-            text = cols[0].strip()
-            wav_file = os.path.join(root_path, "wavs", wav_file)
-            items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
+    for data_root_path in dataset_names.keys():
+        new_root_path=os.path.join(root_path,data_root_path)
+        txt_file = os.path.join(new_root_path, meta_file)
+        speaker_name = dataset_names[data_root_path]
+        print(speaker_name)
+        with open(txt_file, "r", encoding="utf-8") as ttf:
+            for line in ttf:
+                cols = line.split("|")
+                wav_file = cols[1].strip()
+                text = cols[0].strip()
+                wav_file = os.path.join(new_root_path, "wavs", wav_file)
+                items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": new_root_path})
     return items
 
 
